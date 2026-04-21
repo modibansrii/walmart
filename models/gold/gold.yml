@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: date_dim
+    description: Date dimension built from cleaned department data
+    columns:
+      - name: date_id
+        description: Surrogate key for date
+      - name: store_date
+        description: Calendar date
+      - name: is_holiday
+        description: Holiday indicator
+      - name: insert_date
+        description: Insert timestamp
+      - name: update_date
+        description: Update timestamp
+
+  - name: store_dim
+    description: Store and department dimension
+    columns:
+      - name: store_id
+        description: Store identifier
+      - name: dept_id
+        description: Department identifier
+      - name: store_type
+        description: Type of store
+      - name: store_size
+        description: Size of store
+      - name: insert_date
+        description: Insert timestamp
+      - name: update_date
+        description: Update timestamp
+
+  - name: fact_table
+    description: Final Walmart fact table with SCD2 history
+    columns:
+      - name: store_id
+        description: Store identifier
+      - name: dept_id
+        description: Department identifier
+      - name: date_id
+        description: Foreign key to date_dim
+      - name: store_weekly_sales
+        description: Weekly sales amount
+      - name: fuel_price
+        description: Fuel price
+      - name: store_temperature
+        description: Temperature at store
+      - name: unemployment
+        description: Unemployment rate
+      - name: cpi
+        description: Consumer Price Index
+      - name: vrsn_start_date
+        description: SCD2 start timestamp
+      - name: vrsn_end_date
+        description: SCD2 end timestamp

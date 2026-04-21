@@ -7,7 +7,7 @@ version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'default'
+profile: 'walmart'
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -37,27 +37,16 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   walmart:
-
     bronze:
       +materialized: table
       +schema: BRONZE
-
     silver:
       +materialized: view
       +schema: SILVER
-
     gold:
       +materialized: table
       +schema: GOLD
 
-
-vars:
-
-  rawhist_db: WALMART_DB
-  wrk_schema: BRONZE
-
-  stage_name: WALMART_DB.BRONZE.MY_STAGE
-
-  file_format_csv: WALMART_DB.BRONZE.MY_CSV_FORMAT
-
-  purge_status: false
+snapshots:
+  walmart:
+    +target_schema: SNAPSHOTS
