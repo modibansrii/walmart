@@ -1,0 +1,45 @@
+version: 2
+
+models:
+
+  - name: stg_stores
+    description: Staging table for store data
+
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+
+      - name: store_type
+
+      - name: store_size
+
+
+  - name: stg_department
+    description: Staging table for department sales
+
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+
+      - name: dept_id
+        tests:
+          - not_null
+
+      - name: store_date
+        tests:
+          - not_null
+
+
+  - name: stg_fact
+    description: Staging table for fact metrics
+
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+
+      - name: store_date
+        tests:
+          - not_null
