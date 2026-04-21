@@ -1,20 +1,10 @@
 version: 2
 
 sources:
-  - name: stores_source
-    database: WALMART_DB
-    schema: BRONZE
-    tables:
-      - name: STORES
-
-  - name: department_source
+  - name: walmart_bronze_source
     database: WALMART_DB
     schema: BRONZE
     tables:
       - name: DEPARTMENT
-
-  - name: fact_source
-    database: WALMART_DB
-    schema: BRONZE
-    tables:
       - name: FACT
+      - name: STORES

@@ -1,39 +1,39 @@
-{% macro macros_copy_csv(table_nm, column_list, file_pattern) %}
+{% macro macros_copy_csv(table_name, columns_map, file_pattern) %}
 
-{% set sql %}
+    {% set ordered_columns = columns_map | dictsort(false, 'value') %}
+    {% set target_columns = [] %}
+    {% set select_list = [] %}
 
-delete from {{ var('rawhist_db') }}.{{ var('wrk_schema') }}.{{ table_nm }};
+    {% for column_name, position in ordered_columns %}
+        {% do target_columns.append('"' ~ column_name ~ '"') %}
+        {% do select_list.append('$' ~ position ~ ' AS "' ~ column_name ~ '"') %}
+    {% endfor %}
 
-copy into {{ var('rawhist_db') }}.{{ var('wrk_schema') }}.{{ table_nm }}
-from (
+    {% do target_columns.append('"INSERT_DTS"') %}
+    {% do target_columns.append('"UPDATE_DTS"') %}
+    {% do target_columns.append('"SOURCE_FILE_NAME"') %}
+    {% do target_columns.append('"SOURCE_FILE_ROW_NUMBER"') %}
 
-    select
+    {% do select_list.append('CURRENT_TIMESTAMP() AS "INSERT_DTS"') %}
+    {% do select_list.append('CURRENT_TIMESTAMP() AS "UPDATE_DTS"') %}
+    {% do select_list.append('METADATA$FILENAME AS "SOURCE_FILE_NAME"') %}
+    {% do select_list.append('METADATA$FILE_ROW_NUMBER AS "SOURCE_FILE_ROW_NUMBER"') %}
 
-    {%- for col, idx in column_list.items() %}
+    {% set sql %}
+        COPY INTO WALMART_DB.BRONZE.{{ table_name }}
+        (
+            {{ target_columns | join(',\n            ') }}
+        )
+        FROM (
+            SELECT
+                {{ select_list | join(',\n                ') }}
+            FROM @WALMART_DB.BRONZE.WALMART_STAGE
+        )
+        PATTERN='{{ file_pattern }}'
+        FILE_FORMAT = (FORMAT_NAME = WALMART_DB.BRONZE.WALMART_CSV_FORMAT)
+        FORCE = TRUE;
+    {% endset %}
 
-        ${{ idx }} as {{ col }}{{ "," if not loop.last }}
-
-    {%- endfor %}
-
-        , current_timestamp() as INSERT_DTS
-        , current_timestamp() as UPDATE_DTS
-        , metadata$filename as SOURCE_FILE_NAME
-        , metadata$file_row_number as SOURCE_FILE_ROW_NUMBER
-
-    from @{{ var('stage_name') }}
-
-)
-
-file_format = (format_name='{{ var("file_format_csv") }}')
-
-pattern='{{ file_pattern }}'
-
-purge={{ var('purge_status') }}
-
-force=true;
-
-{% endset %}
-
-{% do run_query(sql) %}
+    {{ sql }}
 
 {% endmacro %}
