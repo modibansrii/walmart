@@ -2,53 +2,15 @@ version: 2
 
 models:
   - name: department_clean
-    description: Cleaned department-level sales data from bronze layer
     columns:
       - name: store_id
-        description: Unique store identifier
+        tests:
+          - not_null
+
       - name: dept_id
-        description: Unique department identifier
-      - name: store_date
-        description: Date of the sales record
-      - name: store_weekly_sales
-        description: Weekly sales amount for the department
-      - name: is_holiday
-        description: Holiday flag converted into boolean
+        tests:
+          - not_null
 
-  - name: store_clean
-    description: Cleaned store master data from bronze layer
-    columns:
-      - name: store_id
-        description: Unique store identifier
-      - name: store_type
-        description: Type/category of the store
-      - name: store_size
-        description: Size of the store
-
-  - name: store_metrics_clean
-    description: Cleaned store-level external metrics data from bronze layer
-    columns:
-      - name: store_id
-        description: Unique store identifier
       - name: store_date
-        description: Date of the metrics record
-      - name: store_temperature
-        description: Temperature recorded for the store and date
-      - name: fuel_price
-        description: Fuel price for the store and date
-      - name: markdown1
-        description: Markdown amount 1
-      - name: markdown2
-        description: Markdown amount 2
-      - name: markdown3
-        description: Markdown amount 3
-      - name: markdown4
-        description: Markdown amount 4
-      - name: markdown5
-        description: Markdown amount 5
-      - name: cpi
-        description: Consumer Price Index value
-      - name: unemployment
-        description: Unemployment rate value
-      - name: is_holiday
-        description: Holiday flag converted into boolean
+        tests:
+          - not_null
